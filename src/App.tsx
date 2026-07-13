@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Palette, Calculator, Download, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 // Product Type matching Zara-like minimalist catalog
 interface PremiumProduct {
@@ -252,6 +253,10 @@ interface InteractiveAtelierWidgetProps {
 export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps) {
   const [activeTab, setActiveTab] = useState<'visualizer' | 'calculator'>('visualizer');
   const [selectedColor, setSelectedColor] = useState<ColorShade>(PREMIUM_COLOR_SHADES[0]);
+  const [secondaryColor, setSecondaryColor] = useState<ColorShade>(PREMIUM_COLOR_SHADES[1]);
+  const [compareMode, setCompareMode] = useState<boolean>(false);
+  const [selectedColorSlot, setSelectedColorSlot] = useState<'primary' | 'secondary'>('primary');
+  const [transitionKey, setTransitionKey] = useState<number>(0);
   const [activeDeck, setActiveDeck] = useState<'טמבור' | 'נירלט'>('טמבור');
   const [areaSqM, setAreaSqM] = useState<number>(25);
   const [simulationTarget, setSimulationTarget] = useState<'scene' | 'photo'>('scene');
@@ -264,6 +269,134 @@ export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps)
 
   const selectedTheme = isExteriorCase ? 'facade' : 'lounge';
   const filteredColors = PREMIUM_COLOR_SHADES.filter(c => c.deck === activeDeck);
+
+  const changeColor = (color: ColorShade) => {
+    if (compareMode) {
+      if (selectedColorSlot === 'primary') {
+        setSelectedColor(color);
+      } else {
+        setSecondaryColor(color);
+      }
+    } else {
+      setSelectedColor(color);
+    }
+    setTransitionKey(prev => prev + 1);
+  };
+
+  const renderVisualizerContent = (color: ColorShade, slotName: 'primary' | 'secondary') => {
+    const isSlotSelected = compareMode ? (selectedColorSlot === slotName) : true;
+    return (
+      <div 
+        onClick={() => {
+          if (compareMode) {
+            setSelectedColorSlot(slotName);
+          }
+        }}
+        className={`relative flex-1 w-full bg-neutral-950 flex flex-col items-center justify-center p-2 overflow-hidden min-h-[160px] cursor-pointer transition-all duration-300 ${
+          compareMode && isSlotSelected ? 'ring-2 ring-[#C5A880] bg-neutral-900/40' : 'opacity-85'
+        }`}
+      >
+        {simulationTarget === 'scene' ? (
+          selectedTheme === 'facade' ? (
+            <div className="w-full h-full max-w-sm flex items-center justify-center">
+              <svg viewBox="0 0 400 240" className="w-full h-full object-contain" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="240" fill="#0b0e14" />
+                <circle cx="340" cy="50" r="2" fill="#fff" opacity="0.3" />
+                <circle cx="80" cy="70" r="1.5" fill="#fff" opacity="0.5" />
+                <polygon 
+                  points="60,210 280,210 280,40 60,70" 
+                  fill={color.hex} 
+                  style={{ transition: 'fill 1.2s cubic-bezier(0.4, 0, 0.2, 1)' }} 
+                />
+                <polygon points="280,210 360,210 360,80 280,80" fill="#1a1a1c" />
+                <polygon points="60,210 130,210 130,100 60,110" fill="#4a3121" stroke="#311f14" strokeWidth="0.5" />
+                <line x1="60" y1="130" x2="130" y2="130" stroke="#311f14" strokeWidth="0.5" />
+                <line x1="60" y1="160" x2="130" y2="160" stroke="#311f14" strokeWidth="0.5" />
+                <line x1="60" y1="190" x2="130" y2="190" stroke="#311f14" strokeWidth="0.5" />
+                <rect x="150" y="130" width="40" height="80" fill="#111" stroke="#c5a880" strokeWidth="1" />
+                <circle cx="158" cy="170" r="2" fill="#c5a880" />
+                <polygon points="150,110 260,95 260,55 150,70" fill="#0d1117" stroke="#121824" strokeWidth="2" />
+                <line x1="170" y1="105" x2="210" y2="70" stroke="#c5a880" strokeWidth="1" opacity="0.3" />
+                <line x1="210" y1="100" x2="240" y2="75" stroke="#c5a880" strokeWidth="1" opacity="0.2" />
+                <rect x="0" y="210" width="400" height="30" fill="#111113" />
+                <line x1="0" y1="210" x2="400" y2="210" stroke="#252528" strokeWidth="2" />
+                <polygon points="170,130 130,210 210,210" fill="#c5a880" opacity="0.1" />
+                <line x1="320" y1="180" x2="320" y2="210" stroke="#111" strokeWidth="3" />
+                <circle cx="320" cy="165" r="20" fill="#314036" opacity="0.8" />
+                <circle cx="330" cy="155" r="15" fill="#3d5245" opacity="0.9" />
+              </svg>
+            </div>
+          ) : (
+            <div className="w-full h-full max-w-sm flex items-center justify-center">
+              <svg viewBox="0 0 400 240" className="w-full h-full object-contain" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect 
+                  x="0" y="0" width="400" height="180" 
+                  fill={color.hex} 
+                  style={{ transition: 'fill 1.2s cubic-bezier(0.4, 0, 0.2, 1)' }} 
+                />
+                <rect x="25" y="20" width="90" height="110" fill="#252528" rx="2" />
+                <rect x="30" y="25" width="80" height="100" fill="#3B4D54" opacity="0.3" />
+                <path d="M30 110 C 60 90, 80 120, 110 100 L110 125 L30 125 Z" fill="#2d373c" />
+                <line x1="70" y1="20" x2="70" y2="130" stroke="#121214" strokeWidth="2" />
+                <line x1="25" y1="75" x2="115" y2="75" stroke="#121214" strokeWidth="1.5" />
+                <rect x="0" y="180" width="400" height="60" fill="#1b1714" />
+                <line x1="40" y1="180" x2="10" y2="240" stroke="#2c241f" strokeWidth="1" />
+                <line x1="120" y1="180" x2="90" y2="240" stroke="#2c241f" strokeWidth="1" />
+                <line x1="200" y1="180" x2="190" y2="240" stroke="#2c241f" strokeWidth="1" />
+                <line x1="280" y1="180" x2="290" y2="240" stroke="#2c241f" strokeWidth="1" />
+                <line x1="360" y1="180" x2="390" y2="240" stroke="#2c241f" strokeWidth="1" />
+                <rect x="160" y="140" width="180" height="40" fill="#1e1e1e" rx="4" stroke="#c5a880" strokeWidth="0.5" />
+                <rect x="170" y="125" width="160" height="20" fill="#2d2d2d" rx="2" />
+                <rect x="180" y="145" width="65" height="10" fill="#111" rx="1" />
+                <rect x="255" y="145" width="65" height="10" fill="#111" rx="1" />
+                <line x1="160" y1="180" x2="160" y2="185" stroke="#c5a880" strokeWidth="2" />
+                <line x1="340" y1="180" x2="340" y2="185" stroke="#c5a880" strokeWidth="2" />
+                <line x1="140" y1="90" x2="140" y2="180" stroke="#c5a880" strokeWidth="1.5" />
+                <path d="M130 90 L150 90 L145 75 L135 75 Z" fill="#111" />
+                <polygon points="120,180 160,180 140,175" fill="#c5a880" opacity="0.4" />
+                <rect x="200" y="35" width="70" height="60" fill="#0c0c0e" stroke="#c5a880" strokeWidth="1" />
+                <circle cx="235" cy="65" r="18" fill="#c5a880" opacity="0.8" />
+                <line x1="205" y1="85" x2="265" y2="45" stroke="#111" strokeWidth="2" />
+                <polygon points="355,180 375,180 370,155 360,155" fill="#2d2d2d" />
+                <path d="M365 155 Q350 130 340 135 M365 155 Q380 120 385 125 M365 155 Q365 110 360 120" stroke="#465a4c" strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </div>
+          )
+        ) : (
+          <div className="relative w-full h-full max-w-sm flex items-center justify-center overflow-hidden min-h-[140px]">
+            <img
+              src={msg.image}
+              alt="User uploaded analysis"
+              className="max-h-[140px] w-auto object-contain rounded-sm"
+            />
+            <AnimatePresence mode="popLayout">
+              <motion.div
+                key={color.hex}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.28 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.2, ease: "easeInOut" }}
+                className="absolute inset-0 rounded-sm pointer-events-none mix-blend-color-burn"
+                style={{ backgroundColor: color.hex }}
+              />
+            </AnimatePresence>
+          </div>
+        )}
+
+        <div className="absolute bottom-2 right-2 bg-neutral-950/95 border border-neutral-800 rounded-sm py-1 px-2 text-right flex flex-col gap-0.5 max-w-[140px]">
+          <span className="text-[6px] text-[#C5A880] tracking-wider font-mono uppercase leading-none">
+            {color.fanDeck}
+          </span>
+          <span className="text-[9px] text-white font-semibold leading-none mt-0.5">
+            {color.deck} • {color.code}
+          </span>
+          <span className="text-[8.5px] text-neutral-400 font-medium leading-none">
+            {slotName === 'primary' ? 'גוון א׳ (ראשי)' : 'גוון ב׳ (השוואה)'}
+          </span>
+        </div>
+      </div>
+    );
+  };
 
   const calculateMaterials = () => {
     const results: Array<{
@@ -714,7 +847,35 @@ export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps)
             </div>
           </div>
 
-          <div class="section-title">גוון נבחר להדמיית שטח</div>
+          <div class="section-title">${compareMode ? 'גוונים נבחרים להשוואה והדמייה' : 'גוון נבחר להדמיית שטח'}</div>
+          ${compareMode ? `
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+            <div class="color-showcase" style="margin-bottom: 0;">
+              <div class="color-swatch-box" style="background-color: ${selectedColor.hex};"></div>
+              <div class="color-info-pane">
+                <div class="color-header-row">
+                  <span class="color-code-badge" style="background-color: #c5a880; color: #111;">גוון א׳ (ראשי)</span>
+                </div>
+                <div style="font-size: 14px; font-weight: 600; color: #111; margin-top: 6px;">${selectedColor.name}</div>
+                <div style="font-size: 11px; color: #444; font-weight: 500; margin-top: 2px;">קוד: ${selectedColor.code} • מותג: ${selectedColor.deck}</div>
+                <p class="color-desc-text" style="margin-top: 6px; font-size: 11px;">${selectedColor.description}</p>
+                <div style="font-size: 9px; color: #999; margin-top: 4px;">${selectedColor.fanDeck}</div>
+              </div>
+            </div>
+            <div class="color-showcase" style="margin-bottom: 0;">
+              <div class="color-swatch-box" style="background-color: ${secondaryColor.hex};"></div>
+              <div class="color-info-pane">
+                <div class="color-header-row">
+                  <span class="color-code-badge" style="background-color: #2a363d; color: #fff;">גוון ב׳ (להשוואה)</span>
+                </div>
+                <div style="font-size: 14px; font-weight: 600; color: #111; margin-top: 6px;">${secondaryColor.name}</div>
+                <div style="font-size: 11px; color: #444; font-weight: 500; margin-top: 2px;">קוד: ${secondaryColor.code} • מותג: ${secondaryColor.deck}</div>
+                <p class="color-desc-text" style="margin-top: 6px; font-size: 11px;">${secondaryColor.description}</p>
+                <div style="font-size: 9px; color: #999; margin-top: 4px;">${secondaryColor.fanDeck}</div>
+              </div>
+            </div>
+          </div>
+          ` : `
           <div class="color-showcase">
             <div class="color-swatch-box" style="background-color: ${selectedColor.hex};"></div>
             <div class="color-info-pane">
@@ -723,8 +884,10 @@ export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps)
                 <span class="color-name-text">${selectedColor.name}</span>
               </div>
               <p class="color-desc-text">${selectedColor.description}</p>
+              <div style="font-size: 10px; color: #c5a880; font-weight: 500; margin-top: 4px;">${selectedColor.fanDeck}</div>
             </div>
           </div>
+          `}
           
           <div class="section-title">אבחון טכני ראשוני</div>
           <p style="font-size: 13px; color: #444; margin-bottom: 25px;">${situation}</p>
@@ -806,7 +969,30 @@ export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps)
     if (numPails5 > 0) purchaseDesc += `${numPails18 > 0 ? '+ ' : ''}${numPails5} פח(ים) של 5 ליטר`;
     if (!purchaseDesc) purchaseDesc = "פח 5 ליטר אחד";
 
-    const text = `שלום, ברצוני להזמין הכנה לגיוון מראש בסניף ח. סבן:
+    let text = "";
+    if (compareMode) {
+      text = `שלום, ברצוני להזמין הכנה לגיוון מראש בסניף ח. סבן (מצב השוואתי):
+🎨 פרטי הגוונים שבחרתי להשוות:
+
+1️⃣ גוון א׳ (ראשי):
+• שם: ${selectedColor.name}
+• קוד צבע: ${selectedColor.code}
+• מותג: ${selectedColor.deck}
+• מניפה: ${selectedColor.fanDeck}
+
+2️⃣ גוון ב׳ (להשוואה):
+• שם: ${secondaryColor.name}
+• קוד צבע: ${secondaryColor.code}
+• מותג: ${secondaryColor.deck}
+• מניפה: ${secondaryColor.fanDeck}
+
+📐 אומדן חומרים לכל גוון (עבור שטח של ${areaSqM} מ"ר):
+• כמות צבע מחושבת: ${paintLiters.toFixed(1)} ליטר (במריחה דו-שכבתית)
+• אריזה מומלצת: ${purchaseDesc}
+
+* מפרט השוואתי זה הופק באמצעות מערכת ח. סבן AI ✨`;
+    } else {
+      text = `שלום, ברצוני להזמין הכנה לגיוון מראש בסניף ח. סבן:
 🎨 פרטי הגוון:
 • גוון: ${selectedColor.name}
 • קוד צבע: ${selectedColor.code}
@@ -819,6 +1005,7 @@ export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps)
 • אריזה מומלצת לרכישה: ${purchaseDesc}
 
 * מפרט זה הופק באמצעות מערכת ח. סבן AI ✨`;
+    }
 
     const encodedText = encodeURIComponent(text);
     const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
@@ -862,93 +1049,78 @@ export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps)
 
       {activeTab === 'visualizer' ? (
         <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch">
-            <div className="md:col-span-7 bg-neutral-950/80 border border-neutral-900 rounded-sm overflow-hidden flex flex-col relative aspect-[4/3] md:aspect-auto">
-              <div className="flex-1 w-full bg-neutral-950 flex items-center justify-center relative p-2 overflow-hidden min-h-[160px]">
-                {simulationTarget === 'scene' ? (
-                  selectedTheme === 'facade' ? (
-                    <div className="w-full h-full max-w-sm flex items-center justify-center">
-                      <svg viewBox="0 0 400 240" className="w-full h-full object-contain" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="400" height="240" fill="#0b0e14" />
-                        <circle cx="340" cy="50" r="2" fill="#fff" opacity="0.3" />
-                        <circle cx="80" cy="70" r="1.5" fill="#fff" opacity="0.5" />
-                        <polygon points="60,210 280,210 280,40 60,70" fill={selectedColor.hex} className="transition-all duration-500" />
-                        <polygon points="280,210 360,210 360,80 280,80" fill="#1a1a1c" />
-                        <polygon points="60,210 130,210 130,100 60,110" fill="#4a3121" stroke="#311f14" strokeWidth="0.5" />
-                        <line x1="60" y1="130" x2="130" y2="130" stroke="#311f14" strokeWidth="0.5" />
-                        <line x1="60" y1="160" x2="130" y2="160" stroke="#311f14" strokeWidth="0.5" />
-                        <line x1="60" y1="190" x2="130" y2="190" stroke="#311f14" strokeWidth="0.5" />
-                        <rect x="150" y="130" width="40" height="80" fill="#111" stroke="#c5a880" strokeWidth="1" />
-                        <circle cx="158" cy="170" r="2" fill="#c5a880" />
-                        <polygon points="150,110 260,95 260,55 150,70" fill="#0d1117" stroke="#121824" strokeWidth="2" />
-                        <line x1="170" y1="105" x2="210" y2="70" stroke="#c5a880" strokeWidth="1" opacity="0.3" />
-                        <line x1="210" y1="100" x2="240" y2="75" stroke="#c5a880" strokeWidth="1" opacity="0.2" />
-                        <rect x="0" y="210" width="400" height="30" fill="#111113" />
-                        <line x1="0" y1="210" x2="400" y2="210" stroke="#252528" strokeWidth="2" />
-                        <polygon points="170,130 130,210 210,210" fill="#c5a880" opacity="0.1" />
-                        <line x1="320" y1="180" x2="320" y2="210" stroke="#111" strokeWidth="3" />
-                        <circle cx="320" cy="165" r="20" fill="#314036" opacity="0.8" />
-                        <circle cx="330" cy="155" r="15" fill="#3d5245" opacity="0.9" />
-                      </svg>
-                    </div>
-                  ) : (
-                    <div className="w-full h-full max-w-sm flex items-center justify-center">
-                      <svg viewBox="0 0 400 240" className="w-full h-full object-contain" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="0" y="0" width="400" height="180" fill={selectedColor.hex} className="transition-all duration-500" />
-                        <rect x="25" y="20" width="90" height="110" fill="#252528" rx="2" />
-                        <rect x="30" y="25" width="80" height="100" fill="#3B4D54" opacity="0.3" />
-                        <path d="M30 110 C 60 90, 80 120, 110 100 L110 125 L30 125 Z" fill="#2d373c" />
-                        <line x1="70" y1="20" x2="70" y2="130" stroke="#121214" strokeWidth="2" />
-                        <line x1="25" y1="75" x2="115" y2="75" stroke="#121214" strokeWidth="1.5" />
-                        <rect x="0" y="180" width="400" height="60" fill="#1b1714" />
-                        <line x1="40" y1="180" x2="10" y2="240" stroke="#2c241f" strokeWidth="1" />
-                        <line x1="120" y1="180" x2="90" y2="240" stroke="#2c241f" strokeWidth="1" />
-                        <line x1="200" y1="180" x2="190" y2="240" stroke="#2c241f" strokeWidth="1" />
-                        <line x1="280" y1="180" x2="290" y2="240" stroke="#2c241f" strokeWidth="1" />
-                        <line x1="360" y1="180" x2="390" y2="240" stroke="#2c241f" strokeWidth="1" />
-                        <rect x="160" y="140" width="180" height="40" fill="#1e1e1e" rx="4" stroke="#c5a880" strokeWidth="0.5" />
-                        <rect x="170" y="125" width="160" height="20" fill="#2d2d2d" rx="2" />
-                        <rect x="180" y="145" width="65" height="10" fill="#111" rx="1" />
-                        <rect x="255" y="145" width="65" height="10" fill="#111" rx="1" />
-                        <line x1="160" y1="180" x2="160" y2="185" stroke="#c5a880" strokeWidth="2" />
-                        <line x1="340" y1="180" x2="340" y2="185" stroke="#c5a880" strokeWidth="2" />
-                        <line x1="140" y1="90" x2="140" y2="180" stroke="#c5a880" strokeWidth="1.5" />
-                        <path d="M130 90 L150 90 L145 75 L135 75 Z" fill="#111" />
-                        <polygon points="120,180 160,180 140,175" fill="#c5a880" opacity="0.4" />
-                        <rect x="200" y="35" width="70" height="60" fill="#0c0c0e" stroke="#c5a880" strokeWidth="1" />
-                        <circle cx="235" cy="65" r="18" fill="#c5a880" opacity="0.8" />
-                        <line x1="205" y1="85" x2="265" y2="45" stroke="#111" strokeWidth="2" />
-                        <polygon points="355,180 375,180 370,155 360,155" fill="#2d2d2d" />
-                        <path d="M365 155 Q350 130 340 135 M365 155 Q380 120 385 125 M365 155 Q365 110 360 120" stroke="#465a4c" strokeWidth="2" strokeLinecap="round" />
-                      </svg>
-                    </div>
-                  )
-                ) : (
-                  <div className="relative w-full h-full max-w-sm flex items-center justify-center">
-                    <img
-                      src={msg.image}
-                      alt="User uploaded analysis"
-                      className="max-h-[190px] w-auto object-contain rounded-sm"
-                    />
-                    <div 
-                      className="absolute inset-0 rounded-sm pointer-events-none mix-blend-color-burn transition-all duration-500" 
-                      style={{ 
-                        backgroundColor: selectedColor.hex,
-                        opacity: 0.28
-                      }} 
-                    />
-                  </div>
-                )}
-
-                <div className="absolute bottom-3 right-3 bg-neutral-950/95 border border-neutral-800 rounded-sm py-1.5 px-3 text-right flex flex-col gap-0.5 max-w-[190px]">
-                  <span className="text-[7px] text-[#C5A880] tracking-wider font-mono uppercase leading-tight">
-                    {selectedColor.fanDeck}
-                  </span>
-                  <span className="text-[10px] text-white font-semibold">
-                    {selectedColor.deck} • {selectedColor.code}
-                  </span>
-                </div>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-neutral-950/60 p-2.5 rounded-sm border border-neutral-900/60">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setCompareMode(!compareMode);
+                  if (!compareMode) {
+                    setSelectedColorSlot('primary');
+                  } else {
+                    // Automatically pre-fill secondary color with a nice contrasting shade if same
+                    if (selectedColor.code === secondaryColor.code) {
+                      const other = PREMIUM_COLOR_SHADES.find(c => c.code !== selectedColor.code) || PREMIUM_COLOR_SHADES[1];
+                      setSecondaryColor(other);
+                    }
+                    setSelectedColorSlot('secondary');
+                  }
+                }}
+                className={`px-3 py-1.5 text-[9.5px] uppercase font-bold rounded-xs border cursor-pointer transition-all flex items-center gap-1.5 ${
+                  compareMode 
+                    ? 'border-[#C5A880] bg-[#C5A880]/15 text-[#C5A880]' 
+                    : 'border-neutral-800 bg-neutral-900 text-neutral-300 hover:text-white'
+                }`}
+              >
+                <span>{compareMode ? '✕ בטל השוואה' : '⇄ השוואת שני גוונים במקביל'}</span>
+              </button>
+              {compareMode && (
+                <span className="text-[9px] text-neutral-400 font-sans hidden sm:inline">
+                  לחץ על גוון א׳ או ב׳ בהדמיה כדי לעדכן אותו.
+                </span>
+              )}
+            </div>
+            
+            {compareMode && (
+              <div className="flex gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => setSelectedColorSlot('primary')}
+                  className={`px-2.5 py-1 text-[9px] rounded-xs border font-medium cursor-pointer transition-all flex items-center gap-1 ${
+                    selectedColorSlot === 'primary'
+                      ? 'border-[#C5A880] bg-[#C5A880]/10 text-[#C5A880]'
+                      : 'border-neutral-900 bg-neutral-950 text-neutral-400 hover:text-white'
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                  <span>גוון א׳ (ראשי)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedColorSlot('secondary')}
+                  className={`px-2.5 py-1 text-[9px] rounded-xs border font-medium cursor-pointer transition-all flex items-center gap-1 ${
+                    selectedColorSlot === 'secondary'
+                      ? 'border-[#C5A880] bg-[#C5A880]/10 text-[#C5A880]'
+                      : 'border-neutral-900 bg-neutral-950 text-neutral-400 hover:text-white'
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                  <span>גוון ב׳ (להשוואה)</span>
+                </button>
               </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-stretch">
+            <div className="md:col-span-7 bg-neutral-950/80 border border-neutral-900 rounded-sm overflow-hidden flex flex-col relative">
+              {compareMode ? (
+                <div className="grid grid-cols-2 divide-x divide-neutral-900/80 h-full">
+                  {renderVisualizerContent(selectedColor, 'primary')}
+                  {renderVisualizerContent(secondaryColor, 'secondary')}
+                </div>
+              ) : (
+                renderVisualizerContent(selectedColor, 'primary')
+              )}
 
               {msg.image && (
                 <div className="border-t border-neutral-900 px-3 py-2 bg-neutral-950/60 flex items-center justify-between">
@@ -988,7 +1160,9 @@ export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps)
                     type="button"
                     onClick={() => {
                       setActiveDeck('טמבור');
-                      setSelectedColor(PREMIUM_COLOR_SHADES.find(c => c.deck === 'טמבור')!);
+                      // set default first of deck
+                      const first = PREMIUM_COLOR_SHADES.find(c => c.deck === 'טמבור')!;
+                      changeColor(first);
                     }}
                     className={`py-1.5 text-[10px] font-medium border text-center transition-all cursor-pointer ${
                       activeDeck === 'טמבור'
@@ -1002,7 +1176,8 @@ export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps)
                     type="button"
                     onClick={() => {
                       setActiveDeck('נירלט');
-                      setSelectedColor(PREMIUM_COLOR_SHADES.find(c => c.deck === 'נירלט')!);
+                      const first = PREMIUM_COLOR_SHADES.find(c => c.deck === 'נירלט')!;
+                      changeColor(first);
                     }}
                     className={`py-1.5 text-[10px] font-medium border text-center transition-all cursor-pointer ${
                       activeDeck === 'נירלט'
@@ -1015,48 +1190,61 @@ export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps)
                 </div>
 
                 <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
-                  {filteredColors.map(color => (
-                    <button
-                      type="button"
-                      key={color.code}
-                      onClick={() => setSelectedColor(color)}
-                      className={`w-full text-right p-1.5 rounded-sm border transition-all duration-300 flex items-center justify-between gap-2.5 cursor-pointer ${
-                        selectedColor.code === color.code
-                          ? 'border-[#C5A880] bg-neutral-900'
-                          : 'border-neutral-900 hover:border-neutral-800 bg-transparent'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-4 h-4 rounded-full border border-neutral-700 shadow-sm"
-                          style={{ backgroundColor: color.hex }}
-                        />
-                        <div className="flex flex-col text-right">
-                          <span className="text-[10px] font-medium text-neutral-200 leading-none">{color.name}</span>
-                          <span className="text-[8px] text-neutral-500 font-mono mt-0.5">{color.code}</span>
+                  {filteredColors.map(color => {
+                    const isSelected = compareMode 
+                      ? (selectedColorSlot === 'primary' ? selectedColor.code === color.code : secondaryColor.code === color.code)
+                      : selectedColor.code === color.code;
+                    return (
+                      <button
+                        type="button"
+                        key={color.code}
+                        onClick={() => changeColor(color)}
+                        className={`w-full text-right p-1.5 rounded-sm border transition-all duration-300 flex items-center justify-between gap-2.5 cursor-pointer ${
+                          isSelected
+                            ? 'border-[#C5A880] bg-neutral-900'
+                            : 'border-neutral-900 hover:border-neutral-800 bg-transparent'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-4 h-4 rounded-full border border-neutral-700 shadow-sm"
+                            style={{ backgroundColor: color.hex }}
+                          />
+                          <div className="flex flex-col text-right">
+                            <span className="text-[10px] font-medium text-neutral-200 leading-none">{color.name}</span>
+                            <span className="text-[8px] text-neutral-500 font-mono mt-0.5">{color.code}</span>
+                          </div>
                         </div>
-                      </div>
-                      {selectedColor.code === color.code && (
-                        <Check className="w-3.5 h-3.5 text-[#C5A880]" />
-                      )}
-                    </button>
-                  ))}
+                        {isSelected && (
+                          <Check className="w-3.5 h-3.5 text-[#C5A880]" />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              <div className="bg-[#111] border border-neutral-900 p-2.5 rounded-sm mt-3 space-y-1.5 text-right">
-                <div className="flex items-center justify-between border-b border-neutral-900/40 pb-1">
-                  <span className="text-[9px] text-[#C5A880] font-semibold tracking-wider font-sans uppercase">
-                    {selectedColor.fanDeck}
-                  </span>
-                  <span className="text-[8px] text-neutral-500 font-sans">
-                    מזהה מניפה
-                  </span>
-                </div>
-                <p className="text-[10px] text-neutral-400 font-light leading-relaxed">
-                  <span className="font-semibold text-neutral-300">אבחון עיצובי:</span> {selectedColor.description}
-                </p>
-              </div>
+              {/* Dynamic Design Notes Box for currently active color */}
+              {(() => {
+                const currentActiveColor = compareMode 
+                  ? (selectedColorSlot === 'primary' ? selectedColor : secondaryColor)
+                  : selectedColor;
+                return (
+                  <div className="bg-[#111] border border-neutral-900 p-2.5 rounded-sm mt-3 space-y-1.5 text-right">
+                    <div className="flex items-center justify-between border-b border-neutral-900/40 pb-1">
+                      <span className="text-[9px] text-[#C5A880] font-semibold tracking-wider font-sans uppercase">
+                        {currentActiveColor.fanDeck}
+                      </span>
+                      <span className="text-[8px] text-neutral-500 font-sans">
+                        {compareMode ? `גוון ${selectedColorSlot === 'primary' ? 'א׳' : 'ב׳'} - מזהה מניפה` : 'מזהה מניפה'}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-neutral-400 font-light leading-relaxed">
+                      <span className="font-semibold text-neutral-300">אבחון עיצובי ({currentActiveColor.name}):</span> {currentActiveColor.description}
+                    </p>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
