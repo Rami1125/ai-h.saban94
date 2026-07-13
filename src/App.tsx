@@ -112,22 +112,36 @@ interface ColorShade {
   hex: string;
   deck: 'טמבור' | 'נירלט';
   description: string;
+  fanDeck: string;
 }
 
 const PREMIUM_COLOR_SHADES: ColorShade[] = [
   // Tambour
-  { code: 'OW211', name: 'לבן פנינה / Pearl', hex: '#F3EFE9', deck: 'טמבור', description: 'גוון רך קלאסי המעניק חמימות ויוקרה לחללי פנים.' },
-  { code: 'OW221', name: 'שמנת מלטפת / Cream', hex: '#F2EADC', deck: 'טמבור', description: 'גוון קטיפתי עשיר, מושלם לשילוב עם תאורה חמה וריהוט עץ.' },
-  { code: 'OW124', name: 'אפור אורבני / Urban Gray', hex: '#D6D6D2', deck: 'טמבור', description: 'אפור ניטרלי מתוחכם המעניק מראה מודרני ותעשייתי מעודן.' },
-  { code: 'OW153', name: 'ירוק מרווה / Velvet Sage', hex: '#D2D7CD', deck: 'טמבור', description: 'גוון טבעי מרגיע, יוצר חיבור פראי עם חלונות וצמחייה.' },
-  { code: 'IS0452', name: 'חול מדברי / Desert Sand', hex: '#DFCFB7', deck: 'טמבור', description: 'חול חמים וטבעי המעניק תחושת מרחב ארצית ומזמינה.' },
+  { code: 'OW211', name: 'לבן פנינה / Pearl', hex: '#F3EFE9', deck: 'טמבור', description: 'גוון רך קלאסי המעניק חמימות ויוקרה לחללי פנים.', fanDeck: 'מניפת טמבור ספקטרום (Tambour Spectrum)' },
+  { code: 'OW221', name: 'שמנת מלטפת / Cream', hex: '#F2EADC', deck: 'טמבור', description: 'גוון קטיפתי עשיר, מושלם לשילוב עם תאורה חמה וריהוט עץ.', fanDeck: 'מניפת טמבור ספקטרום (Tambour Spectrum)' },
+  { code: 'OW124', name: 'אפור אורבני / Urban Gray', hex: '#D6D6D2', deck: 'טמבור', description: 'אפור ניטרלי מתוחכם המעניק מראה מודרני ותעשייתי מעודן.', fanDeck: 'מניפת טמבור ספקטרום (Tambour Spectrum)' },
+  { code: 'OW153', name: 'ירוק מרווה / Velvet Sage', hex: '#D2D7CD', deck: 'טמבור', description: 'גוון טבעי מרגיע, יוצר חיבור פראי עם חלונות וצמחייה.', fanDeck: 'מניפת טמבור ספקטרום (Tambour Spectrum)' },
+  { code: 'IS0452', name: 'חול מדברי / Desert Sand', hex: '#DFCFB7', deck: 'טמבור', description: 'חול חמים וטבעי המעניק תחושת מרחב ארצית ומזמינה.', fanDeck: 'מניפת טמבור ספקטרום (Tambour Spectrum)' },
+  { code: 'OW212', name: 'לבן שמנת מודרני / Modern Off-White', hex: '#f4f0e6', deck: 'טמבור', description: 'לבן שבור מעודן עם נגיעה חמה ועכשווית, מתאים במיוחד לחללי סלון ואירוח.', fanDeck: 'מניפת טמבור ספקטרום (Tambour Spectrum)' },
+  { code: 'OW201', name: 'לבן שלג פרימיום / Snow White', hex: '#fcfbfa', deck: 'טמבור', description: 'לבן בוהק ונקי, מעצים את האור הטבעי ויוצר מראה חללי רחב וטהור.', fanDeck: 'מניפת טמבור ספקטרום (Tambour Spectrum)' },
+  { code: '0005P', name: 'בז׳ קלוע / Woven Beige', hex: '#ebdcc5', deck: 'טמבור', description: 'גוון בז׳ חמים וטבעי המשרה שלווה ביתית ומשתלב באופן מרהיב עם טקסטורות גסות.', fanDeck: 'מניפת טמבור ספקטרום (Tambour Spectrum)' },
+  { code: '1534P', name: 'כחול רויאל עמוק / Royal Blue', hex: '#273a52', deck: 'טמבור', description: 'כחול עשיר ומלכותי המתאים לקירות מוקד ומוסיף עומק ואינטלקטואליות לחלל.', fanDeck: 'מניפת טמבור ספקטרום (Tambour Spectrum)' },
+  { code: '0873P', name: 'ירוק יער צפוני / Forest Green', hex: '#3e4d41', deck: 'טמבור', description: 'ירוק מעושן המזכיר יערות אורנים, יוצר אווירה אלגנטית, שקטה ונקייה.', fanDeck: 'מניפת טמבור ספקטרום (Tambour Spectrum)' },
   
   // Nirlat
-  { code: 'N088', name: 'ספארי מדברי / Safari', hex: '#E5D5BE', deck: 'נירלט', description: 'גוון חולי אופנתי בעל נוכחות חמה, מדמה דיונות ונוף מדברי.' },
-  { code: 'N112', name: 'אבן קיסר / Caesar Stone', hex: '#DED5C6', deck: 'נירלט', description: 'צבע אבן אלגנטי המדגיש חומרים טבעיים ומשתלב נפלא עם בטון.' },
-  { code: 'N190', name: 'גרפיט פרימיום / Graphite', hex: '#4E4E50', deck: 'נירלט', description: 'אפור פחם עמוק ליצירת קירות כוח מודרניים ודרמטיים.' },
-  { code: 'N154', name: 'כחול אטלייה / Atelier Blue', hex: '#3A4A51', deck: 'נירלט', description: 'כחול מעושן יוקרתי המעניק עומק ואווירה יצירתית ואריסטוקרטית.' },
-  { code: 'N0552', name: 'חימר חופי / Coastal Clay', hex: '#C8B29E', deck: 'נירלט', description: 'גוון אדמה חרסיתי מרוכך המשרה חמימות ים תיכונית פסטורלית.' }
+  { code: 'N088', name: 'ספארי מדברי / Safari', hex: '#E5D5BE', deck: 'נירלט', description: 'גוון חולי אופנתי בעל נוכחות חמה, מדמה דיונות ונוף מדברי.', fanDeck: 'מניפת נירלט קולורס (Nirlat Colors)' },
+  { code: 'N112', name: 'אבן קיסר / Caesar Stone', hex: '#DED5C6', deck: 'נירלט', description: 'צבע אבן אלגנטי המדגיש חומרים טבעיים ומשתלב נפלא עם בטון.', fanDeck: 'מניפת נירלט קולורס (Nirlat Colors)' },
+  { code: 'N190', name: 'גרפיט פרימיום / Graphite', hex: '#4E4E50', deck: 'נירלט', description: 'אפור פחם עמוק ליצירת קירות כוח מודרניים ודרמטיים.', fanDeck: 'מניפת נירלט אקסטרה (Nirlat Extra)' },
+  { code: 'N154', name: 'כחול אטלייה / Atelier Blue', hex: '#3A4A51', deck: 'נירלט', description: 'כחול מעושן יוקרתי המעניק עומק ואווירה יצירתית ואריסטוקרטית.', fanDeck: 'מניפת נירלט אקסטרה (Nirlat Extra)' },
+  { code: 'N0552', name: 'חימר חופי / Coastal Clay', hex: '#C8B29E', deck: 'נירלט', description: 'גוון אדמה חרסיתי מרוכך המשרה חמימות ים תיכונית פסטורלית.', fanDeck: 'מניפת נירלט קולורס (Nirlat Colors)' },
+  { code: 'IS 0037', name: 'לבן משי / Silk White', hex: '#f4f3ed', deck: 'נירלט', description: 'לבן בהיר ונקי עם רכות משי המעניק מראה מאוזן ומזמין בכל שעות היום.', fanDeck: 'מניפת נירלט קולורס (Nirlat Colors)' },
+  { code: 'IS 0108', name: 'בז׳ קטיפתי / Velvet Beige', hex: '#e8ded0', deck: 'נירלט', description: 'גוון בז׳ חמים ומרגיע המדמה חול ים דק, מתאים להלבשת קירות הבית המרכזיים.', fanDeck: 'מניפת נירלט קולורס (Nirlat Colors)' },
+  { code: 'IS 0447', name: 'ירוק מרווה פסטורלי / Pastoral Sage', hex: '#c5cdbf', deck: 'נירלט', description: 'גוון ירוק-אפרפר צמחי המביא את הטבע הביתה ויוצר שלווה מיידית.', fanDeck: 'מניפת נירלט אינספייר (Nirlat Inspire)' },
+  { code: 'IS 0504', name: 'אפור ערפל / Mist Gray', hex: '#b8b8b5', deck: 'נירלט', description: 'אפור ערפילי מודרני עם תת-גוון קריר מעט, נפלא כחלופה ללבן הסטנדרטי.', fanDeck: 'מניפת נירלט קולורס (Nirlat Colors)' },
+  { code: 'IS 0212', name: 'ורוד פודרה אדריכלי / Powder Pink', hex: '#f0e2dc', deck: 'נירלט', description: 'ורוד עדין ומרוכך במיוחד המוסיף חמימות אלגנטית ומאירה לחדרי שינה ורחצה.', fanDeck: 'מניפת נירלט אינספייר (Nirlat Inspire)' },
+  { code: 'IS 0011', name: 'לבן פנינה קריסטל / Crystal Pearl', hex: '#f7f5f0', deck: 'נירלט', description: 'גוון פנינה יוקרתי ומנצנץ ברכות, מושלם לשילוב עם תאורת לד חמה.', fanDeck: 'מניפת נירלט קולורס (Nirlat Colors)' },
+  { code: 'IS 0812', name: 'כחול חצות מעושן / Smoky Midnight', hex: '#2a363d', deck: 'נירלט', description: 'כחול אולטרה-מודרני ועמוק עם נוכחות חזקה לקיר כוח אומנותי בסלון או במשרד.', fanDeck: 'מניפת נירלט אקסטרה (Nirlat Extra)' },
+  { code: 'IS 0134', name: 'חול זהוב / Golden Sand', hex: '#e1ceb1', deck: 'נירלט', description: 'גוון חול עשיר וחמים עם נגיעות זהובות המזכיר את סמטאות יפו העתיקה והאבן ההיסטורית.', fanDeck: 'מניפת המרכז לשימור (Nirlat Conservation)' }
 ];
 
 const parseMaterialsFromHtmlGlobal = (html: string) => {
@@ -781,6 +795,36 @@ export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps)
     printWindow.document.close();
   };
 
+  const handleWhatsAppShare = () => {
+    const paintLiters = (areaSqM * 2) / 8;
+    const numPails18 = Math.floor(paintLiters / 18);
+    const remainder = paintLiters % 18;
+    const numPails5 = remainder > 0 ? (remainder <= 5 ? 1 : 2) : 0;
+    
+    let purchaseDesc = "";
+    if (numPails18 > 0) purchaseDesc += `${numPails18} פח(ים) של 18 ליטר `;
+    if (numPails5 > 0) purchaseDesc += `${numPails18 > 0 ? '+ ' : ''}${numPails5} פח(ים) של 5 ליטר`;
+    if (!purchaseDesc) purchaseDesc = "פח 5 ליטר אחד";
+
+    const text = `שלום, ברצוני להזמין הכנה לגיוון מראש בסניף ח. סבן:
+🎨 פרטי הגוון:
+• גוון: ${selectedColor.name}
+• קוד צבע: ${selectedColor.code}
+• מותג: ${selectedColor.deck}
+• מניפה מדויקת: ${selectedColor.fanDeck}
+
+📐 אומדן חומרים ושטח:
+• שטח מוגדר: ${areaSqM} מ"ר
+• כמות צבע מחושבת: ${paintLiters.toFixed(1)} ליטר (במריחה דו-שכבתית)
+• אריזה מומלצת לרכישה: ${purchaseDesc}
+
+* מפרט זה הופק באמצעות מערכת ח. סבן AI ✨`;
+
+    const encodedText = encodeURIComponent(text);
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodedText}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
     <div className="mt-6 bg-[#09090b] border border-neutral-900 rounded-sm p-4 md:p-5 text-right font-sans" dir="rtl">
       <div className="flex items-center justify-between border-b border-neutral-900 pb-3 mb-4">
@@ -896,8 +940,10 @@ export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps)
                   </div>
                 )}
 
-                <div className="absolute bottom-3 right-3 bg-neutral-950/95 border border-neutral-800 rounded-sm py-1 px-2.5 text-right flex flex-col gap-0.5">
-                  <span className="text-[7px] text-neutral-500 tracking-wider font-serif uppercase">LIVE SIMULATED SPEC</span>
+                <div className="absolute bottom-3 right-3 bg-neutral-950/95 border border-neutral-800 rounded-sm py-1.5 px-3 text-right flex flex-col gap-0.5 max-w-[190px]">
+                  <span className="text-[7px] text-[#C5A880] tracking-wider font-mono uppercase leading-tight">
+                    {selectedColor.fanDeck}
+                  </span>
                   <span className="text-[10px] text-white font-semibold">
                     {selectedColor.deck} • {selectedColor.code}
                   </span>
@@ -998,7 +1044,15 @@ export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps)
                 </div>
               </div>
 
-              <div className="bg-[#111] border border-neutral-900 p-2.5 rounded-sm mt-3">
+              <div className="bg-[#111] border border-neutral-900 p-2.5 rounded-sm mt-3 space-y-1.5 text-right">
+                <div className="flex items-center justify-between border-b border-neutral-900/40 pb-1">
+                  <span className="text-[9px] text-[#C5A880] font-semibold tracking-wider font-sans uppercase">
+                    {selectedColor.fanDeck}
+                  </span>
+                  <span className="text-[8px] text-neutral-500 font-sans">
+                    מזהה מניפה
+                  </span>
+                </div>
                 <p className="text-[10px] text-neutral-400 font-light leading-relaxed">
                   <span className="font-semibold text-neutral-300">אבחון עיצובי:</span> {selectedColor.description}
                 </p>
@@ -1080,15 +1134,27 @@ export function InteractiveAtelierWidget({ msg }: InteractiveAtelierWidgetProps)
           </span>
         </div>
 
-        <button
-          type="button"
-          onClick={handleWidgetPDFExport}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#C5A880] hover:bg-[#d9bc94] text-black rounded-sm text-[10px] font-sans font-semibold tracking-wider transition-all cursor-pointer shadow-md"
-          title="הורדת מפרט אדריכלי וכתב כמויות PDF מעודכן"
-        >
-          <Download className="w-3.5 h-3.5" />
-          <span>ייצוא מפרט אדריכלי וכמויות ל-PDF 📋</span>
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={handleWhatsAppShare}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white rounded-sm text-[10px] font-sans font-semibold tracking-wider transition-all cursor-pointer shadow-md"
+            title="שתף קוד גוון, שם וכמות לגיוון מראש בוואטסאפ"
+          >
+            <span className="text-xs">📱</span>
+            <span>שיתוף לגיוון בוואטסאפ</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleWidgetPDFExport}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#C5A880] hover:bg-[#d9bc94] text-black rounded-sm text-[10px] font-sans font-semibold tracking-wider transition-all cursor-pointer shadow-md"
+            title="הורדת מפרט אדריכלי וכתב כמויות PDF מעודכן"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>ייצוא מפרט אדריכלי וכמויות ל-PDF 📋</span>
+          </button>
+        </div>
       </div>
     </div>
   );
