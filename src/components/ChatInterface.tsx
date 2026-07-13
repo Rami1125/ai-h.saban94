@@ -86,12 +86,16 @@ export default function ChatInterface({
             </div>
 
             <div className={`space-y-1 max-w-[82%] ${msg.sender === 'user' ? 'text-right' : 'text-right'}`}>
-              <div className={`p-3.5 rounded-2xl text-xs leading-relaxed shadow-md whitespace-pre-line ${
+              <div className={`p-3.5 rounded-2xl text-xs leading-relaxed shadow-md ${
                 msg.sender === 'user'
-                  ? 'bg-amber-500/10 text-amber-100 border border-amber-500/20 rounded-tr-xl rounded-bl-xl rounded-br-xl text-right'
-                  : 'bg-white/5 border border-white/5 text-gray-300 rounded-tl-xl rounded-bl-xl rounded-br-xl text-right'
+                  ? 'bg-amber-500/10 text-amber-100 border border-amber-500/20 rounded-tr-xl rounded-bl-xl rounded-br-xl text-right whitespace-pre-line'
+                  : 'bg-white/5 border border-white/5 text-gray-300 rounded-tl-xl rounded-bl-xl rounded-br-xl text-right whitespace-pre-line'
               }`}>
-                {msg.text}
+                {msg.text && (msg.text.trim().startsWith('<') || msg.text.includes('<p>') || msg.text.includes('</div>') || msg.text.includes('</h4>')) ? (
+                  <div dangerouslySetInnerHTML={{ __html: msg.text }} />
+                ) : (
+                  msg.text
+                )}
 
                 {/* Inline Refine trigger inside bubble if helper message */}
                 {msg.isRefining && (

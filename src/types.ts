@@ -48,3 +48,23 @@ export interface RedesignResponse {
   products?: ShoppableItem[];
   error?: string;
 }
+
+export interface SystemLog {
+  id: string;
+  timestamp: string;
+  fileName: string;
+  fileSize: string;
+  fileType: string;
+  driveUrl: string;
+  modelUsed: string;
+  apiKeyUsed: string;
+  status: 'success' | 'error';
+  analysisResult: string;
+}
+
+export interface KeyRotationStatus {
+  activeKeyIndex: number;
+  key1Status: 'פעיל' | 'שגיאה' | 'לא מוגדר';
+  key2Status: 'פעיל' | 'שגיאה' | 'לא מוגדר';
+  rotationLogs: string[];
+}
